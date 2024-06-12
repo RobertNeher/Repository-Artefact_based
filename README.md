@@ -12,8 +12,7 @@ For customer CONTACT Software, Bremen (CSB)
 - [x] Implementation of update operation
 - [x] Implementation of read operation
 - [ ] Implementation of delete operation</BR>
-</BR>
-Optional
+Optional</BR>
 - [ ] REST API
 - [ ] Web site for CRUD operations
 
