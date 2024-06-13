@@ -14,7 +14,7 @@ def rollback(workItemID: str, revisionID: int):
     wiCollection = client[settings.dbName].get_collection(settings.workItemCollection)
     wiHistoryCollection = client[settings.dbName].get_collection(settings.workItemHistoryCollection)
 
-    changes2Apply = wiHistoryCollection.find_one({"$and": [{"wiID": workItemID}, {"_id": revisionID}]})
+    changes2Apply = wiHistoryCollection.find_one({"$and": [{"workItemID": workItemID}, {"_id": revisionID}]})
 
     if len(list(changes2Apply)) < 1:
         print("Revision {} is not valid for workitem '{}'".format(revisionID, workItemID))

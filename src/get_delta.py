@@ -33,11 +33,11 @@ def getDelta(workItemID: str, fromRevisionID: int, **kwargs):
     _baseWorkItem = copy.deepcopy(baseWorkItem)
 
     if revisionTo is not None:
-        changes2Apply = wiHistoryCollection.find_one({"$and": [{"wiID": workItemID}, {"revision": revisionTo}]})
+        changes2Apply = wiHistoryCollection.find_one({"$and": [{"workItemID": workItemID}, {"revision": revisionTo}]})
         baseWorkItem = prepareWorkItem(_baseWorkItem, changes2Apply)
         _baseWorkItem = copy.deepcopy(baseWorkItem)
 
-    changes2Apply = wiHistoryCollection.find_one({"$and": [{"wiID": workItemID}, {"revision": revisionFrom}]})
+    changes2Apply = wiHistoryCollection.find_one({"$and": [{"workItemID": workItemID}, {"revision": revisionFrom}]})
     targetWorkItem = prepareWorkItem(_baseWorkItem, changes2Apply)
 
     compare1 = ',\n'.join(dumps(baseWorkItem).split(','))

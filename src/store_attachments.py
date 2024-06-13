@@ -16,7 +16,7 @@ def storeAttachments(workItemID: str, revision: int):
 
     if revision is not None:
         wiHistoryCollection = client[settings.dbName].get_collection(settings.workItemHistoryCollection)
-        changes2Apply = wiHistoryCollection.find_one({"$and": [{"wiID": ObjectId(workItemID)}, {"revision": revision}]})
+        changes2Apply = wiHistoryCollection.find_one({"$and": [{"workItemID": ObjectId(workItemID)}, {"revision": revision}]})
         workItem = prepareWorkItem(workItem, changes2Apply)
 
     if not "attachments" in workItem.keys():

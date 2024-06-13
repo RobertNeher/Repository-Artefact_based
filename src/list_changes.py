@@ -43,9 +43,9 @@ def listChanges(workItemID:str, fromRevision:int, toRevision:int):
 
     # get changes on work item
     if toRevision is None:
-        changes = wiHistoryCollection.find({"$and": [{"wiID": ObjectId(workItemID)}, {"revision": {"$gte": fromRevision}}]}).sort({"reevision": DESCENDING})
+        changes = wiHistoryCollection.find({"$and": [{"workItemID": ObjectId(workItemID)}, {"revision": {"$gte": fromRevision}}]}).sort({"revision": DESCENDING})
     else:
-        changes = wiHistoryCollection.find({"$and": [{"wiID": ObjectId(workItemID)}, {"revision": {"$gte": fromRevision}}, {"revision": {"$lte": toRevision}}]}).sort({"revision": DESCENDING})
+        changes = wiHistoryCollection.find({"$and": [{"workItemID": ObjectId(workItemID)}, {"revision": {"$gte": fromRevision}}, {"revision": {"$lte": toRevision}}]}).sort({"revision": DESCENDING})
 
     baseWorkItem = loads(dumps(wiCollection.find_one({'_id': ObjectId(workItemID)})))
     diffs = HTML_HEADER
