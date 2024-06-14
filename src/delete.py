@@ -12,7 +12,7 @@ def deleteWorkItem(workItemID: str) -> bool:
 
     client = MongoClient(settings.uri, server_api=ServerApi('1'))
     wiCollection = client[settings.dbName].get_collection(settings.workItemCollection)
-    wiCollection.update_one({"_id": workItemID}, update={'$set': [{"deleted": True}, {"status": "Obsolete"}]})
+    wiCollection.update_one({"_id": workItemID}, update={'$set': {"deleted": True, "status": "Obsolete"}})
                                
                                
 if __name__ == "__main__":

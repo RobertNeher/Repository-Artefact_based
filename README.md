@@ -90,8 +90,8 @@ Is more or less the "front end" of the supporting function "get_deltas", see bel
 
 ## Rollback
 Start by: `python src/rollback.py`</BR>
-Parameters: `<Work Item ID> <From Revision>`<BR/>
-Resets work item's content back to historic state defined by "From Revision". This action must create an entry in work item history store.
+Parameters: `<Work Item ID> <To Revision>`<BR/>
+Resets work item's content back to historic state defined by "To Revision". This action must create an entry in work item history store.
 
 # Supporting modules
 
