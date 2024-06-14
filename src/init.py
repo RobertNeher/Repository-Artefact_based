@@ -1,9 +1,24 @@
+import sys
 import settings as settings
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pymongo import DESCENDING
 
+def confirmation() -> bool:
+    """
+    Ask user to confirm initialization by entering Y or N (case-insensitive).
+    :return: True if the answer is Y.
+    """
+    answer = ""
+
+    while answer not in ["y", "n"]:
+        answer = input("OK to push to continue [Y/N]? ").lower()
+    return answer == "y"
+
 def initializeRepo():
+    if not confirmation():
+        sys.exit(0)
+
     client = MongoClient(settings.uri, server_api=ServerApi('1'))
 
     # create database and work item collection
