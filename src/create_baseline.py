@@ -12,9 +12,8 @@ def createBaseline(title: str, author: str):
 
     revisionID = revision.find_one({"revision": {"$gte": 0}})["revision"]
 
-    # correction of ID counter (due to preemptive ID after update)
-    if revisionID > 1:
-        revisionID -= 1
+    # correct pre-emptive revision counter to point to latest transacion (AKA HEAD)
+    revisionID -= 1
 
     try:
         baselineCollection.insert_one({"revision": revisionID,

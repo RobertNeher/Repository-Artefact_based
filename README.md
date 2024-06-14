@@ -67,12 +67,12 @@ Parameter: `<Work Item ID> [<Revision ID>]`</BR>
 Downloads all attachments of given work item to current folder. If revision ID is not given, attachments of HEAD revision will be taken.
 <BR/>
 
-## Baselines
-Contains following functions:
-### createBaseline
+## Create baseline
+Start by: `python src/create_baseline.py`</BR>
+Parameter: `<Work Item ID> [<Revision ID>]`</BR>
 Parameters: `<Label> <Author>`<BR/>
 Creates a baseline in baseline store. In fact, it labels the HEAD revision.<BR/>
-(A "later" labeling should be prevented.)<BR/>
+(A "retrospective" labeling is not possible/recommended.)<BR/>
 
 ### compareBaselines
 Parameters: `<Work Item ID> <From Revision> [<To Revision>]`<BR/>
@@ -91,7 +91,7 @@ Is more or less the "front end" of the supporting function "get_deltas", see bel
 ## Rollback
 Start by: `python src/rollback.py`</BR>
 Parameters: `<Work Item ID> <To Revision>`<BR/>
-Resets work item's content back to historic state defined by "To Revision". This action must create an entry in work item history store.
+Resets work item's content back to historic state defined by "To Revision". If work item is labeled as "deleted", the work item will be recovered, ie. the label disappears. This action must create an entry in work item history store.
 
 # Supporting modules
 
