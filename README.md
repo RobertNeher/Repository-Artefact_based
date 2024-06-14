@@ -39,14 +39,20 @@ events will be recognized and stores the changes (AKA deltas) in work item histo
 HINT: Please use delete_workitem.py for deletion. Only in this case a retrieval of deleted work item is possible. A deletion by mean of the work item store, the information is lost forever.
 </BR>
 
-## Create test data
-Start by: `python src/create_test_data.py`</BR>
+## Initialization of the repository
+Start by: `python src/init.py`</BR>
 Parameters: None<BR/>
 * Resets the entire database
 * Creates all stores from scratch, including their indexes
 * Resets the revision counter
 * Resets the history stores
+<BR/>
+
+## Create test data
+Start by: `python src/create_test_data.py`</BR>
+Parameters: None<BR/>
 * Creates almost 1'000 entries in work item store with arbitrary description and summary
+An initialization of the repository is recommended, beforehand.
 <BR/>
 
 ## Modify test data
