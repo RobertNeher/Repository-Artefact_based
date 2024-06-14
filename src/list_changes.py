@@ -11,30 +11,6 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pymongo import DESCENDING
 
-HTML_HEADER = """
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html>
-
-<head>
-    <meta http-equiv="Content-Type"
-          content="text/html; charset=utf-8" />
-    <title></title>
-    <style type="text/css">
-        table.diff {font-family:Courier; border:medium;}
-        .diff_header {background-color:#e0e0e0}
-        td.diff_header {text-align:right}
-        .diff_next {background-color:#c0c0c0}
-        .diff_add {background-color:#aaffaa}
-        .diff_chg {background-color:#ffff77}
-        .diff_sub {background-color:#ffaaaa}
-    </style>
-</head>
-
-<body>
-"""
-
 def listChanges(workItemID:str, fromRevision:int, toRevision:int):
     client = MongoClient(settings.uri, server_api=ServerApi('1'))
     db = client[settings.dbName]
@@ -48,7 +24,7 @@ def listChanges(workItemID:str, fromRevision:int, toRevision:int):
         changes = wiHistoryCollection.find({"$and": [{"workItemID": ObjectId(workItemID)}, {"revision": {"$gte": fromRevision}}, {"revision": {"$lte": toRevision}}]}).sort({"revision": DESCENDING})
 
     baseWorkItem = loads(dumps(wiCollection.find_one({'_id': ObjectId(workItemID)})))
-    diffs = HTML_HEADER
+    diffs = settings.HTML_HEADER
 
     skipFirst = False
     skipFirst = toRevision is None
