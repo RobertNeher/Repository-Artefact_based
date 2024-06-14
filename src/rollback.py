@@ -14,20 +14,33 @@ def rollback(workItemID: str, revisionID: int, author: str):
     wiCollection = client[settings.dbName].get_collection(settings.workItemCollection)
     wiHistoryCollection = client[settings.dbName].get_collection(settings.workItemHistoryCollection)
 
-    changes2Apply = wiHistoryCollection.find_one({"$and": [{"workItemID": workItemID}, {"revision": revisionID}]})
+    workItem = wiCollection.find_one({"_id": ObjectId(workItemID)})
 
-    if len(list(changes2Apply)) < 1:
-        print("Revision {} is not valid for workitem '{}'".format(revisionID, workItemID))
-        sys.exit(1)
+    if "deleted" in workItem.keys() and workItem["deleted"]:
+        workItem.pop("deleted", None)
 
-    changes2Apply["change"]["modified"] = datetime.now()
+        try:
+            wiCollection.update_one({"_id": workItemID}, update={'$unset': {"deleted": None}})
+        except:
+            print("Rollback (recovery of workitem {}) did not work.".format(workItemID))
+        finally:
+            print("Rollback (recovery of workitem {}) succeeded.".format(workItemID))
 
-    try:
-        wiCollection.update_one({"_id": workItemID}, update={'$set': changes2Apply["change"]})
-    except:
-        print("Rollback of workitem {} to revision '{}' did not work.".format(workItemID, revisionID))
-    finally:
-        print("Rollback to content of revision '{}' succeeded.".format(revisionID))
+    else:
+        changes2Apply = wiHistoryCollection.find_one({"$and": [{"workItemID": workItemID}, {"revision": revisionID}]})
+
+        if len(list(changes2Apply)) < 1:
+            print("Revision {} is not valid for workitem '{}'".format(revisionID, workItemID))
+            sys.exit(1)
+
+        changes2Apply["change"]["modified"] = datetime.now()
+
+        try:
+            wiCollection.update_one({"_id": workItemID}, update={'$set': changes2Apply["change"]})
+        except:
+            print("Rollback of workitem {} to revision '{}' did not work.".format(workItemID, revisionID))
+        finally:
+            print("Rollback to content of revision '{}' succeeded.".format(revisionID))
 
 
 #------------------------ MAIN ------------------------#
