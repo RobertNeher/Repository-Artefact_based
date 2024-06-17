@@ -12,7 +12,7 @@ def confirmation() -> bool:
     answer = ""
 
     while answer not in ["y", "n"]:
-        answer = input("OK to push to continue [Y/N]? ").lower()
+        answer = input("Please confirm initialization of repository [Y/N]? ").lower()
     return answer == "y"
 
 def initializeRepo():

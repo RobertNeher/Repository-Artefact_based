@@ -5,7 +5,7 @@ from bson.json_util import dumps, loads
 import sys
 from prepare_workitem import prepareWorkItem
 import settings as settings
-# from datetime import datetime
+from html_header import HTMLHeader
 from bson import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -24,7 +24,7 @@ def listChanges(workItemID:str, fromRevision:int, toRevision:int):
         changes = wiHistoryCollection.find({"$and": [{"workItemID": ObjectId(workItemID)}, {"revision": {"$gte": fromRevision}}, {"revision": {"$lte": toRevision}}]}).sort({"revision": DESCENDING})
 
     baseWorkItem = loads(dumps(wiCollection.find_one({'_id': ObjectId(workItemID)})))
-    diffs = settings.HTML_HEADER
+    diffs = HTMLHeader(title="Change log", docTitle="List of Changes")
 
     skipFirst = False
     skipFirst = toRevision is None
