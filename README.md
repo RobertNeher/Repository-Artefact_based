@@ -94,6 +94,11 @@ Start by: `python src/list_changes.py`</BR>
 Parameter: `<Work Item ID> <From Revision>`</BR>
 Is more or less the "front end" of the supporting function "get_deltas", see below.
 
+## Export log
+Start by: `python src/log.py`</BR>
+Parameter: `[<Work Item ID>]`</BR>
+Pretty print of all changes of work item. If no work item is specified all changes will be exported.
+
 ## Rollback
 Start by: `python src/rollback.py`</BR>
 Parameters: `<Work Item ID> <To Revision>`<BR/>
