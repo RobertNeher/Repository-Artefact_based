@@ -6,18 +6,8 @@ def changeStream():
     client = pymongo.MongoClient(settings.uri)
     db = client.get_database(settings.dbName)
 
-    if not settings.workItemHistoryCollection in db.list_collection_names():
-        wiHistoryCollection = db.create_collection(settings.workItemHistoryCollection)
-        wiHistoryCollection.create_index([{"_id": pymongo.DESCENDING}, "workItemID"], unique=True)
-    else:
-        wiHistoryCollection = db[settings.workItemHistoryCollection]
-
-    if not settings.revisionsCollection in db.list_collection_names():
-        revisionCollection = db.create_collection(settings.revisionsCollection)
-        revisionCollection.insert_one({"revision": 0})
-    else:
-        revisionCollection = db[settings.revisionsCollection]
-
+    wiHistoryCollection = db[settings.workItemHistoryCollection]
+    revisionCollection = db[settings.revisionsCollection]
     wiCollection = db.get_collection(settings.workItemCollection)
 
     change_stream = wiCollection.watch([{
@@ -52,8 +42,9 @@ def changeStream():
                     initialContent["revision"] = currentRevision["revision"]
                     wiHistoryCollection.insert_one(initialContent)
                     revisionCollection.update_one({"revision": {"$gte": 0}}, {"$inc": {"revision": 1}})
-        
-        if change["operationType"] in ["delete"]:
+
+        # should never be reached: Delete is an update operation which adds a deleted flag
+        if change["operationType"] == "delete":
             wiHistoryCollection.insert_one({"workItemID": change["documentKey"]["_id"],
                 "change": "deleted",
                 "modifiedBy": "Robby",

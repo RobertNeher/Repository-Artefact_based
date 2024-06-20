@@ -33,10 +33,13 @@ Parameters: None<BR/>
 Listens to changes in the work item document store:
 * insert
 * update
-* delete
-events will be recognized and stores the changes (AKA deltas) in work item history store.
-<BR/>
-HINT: Please use delete_workitem.py for deletion. Only in this case a retrieval of deleted work item is possible. A deletion by mean of the work item store, the information is lost forever.
+* delete<BR/>
+
+events will be recognized and stores the changes (AKA deltas) in work item history store.<BR/>
+
+Revision 0 keeps always the initial version of the work item.<BR/>
+
+HINT: Please use delete_workitem.py for deletion. Only in this case a retrieval of deleted work item is possible. A deletion by mean of the work item store, the deletion state is lost forever.
 </BR>
 
 ## Initialization of the repository
@@ -60,6 +63,12 @@ Start by: `python src/modify_test_data.py`</BR>
 Parameter: `<Work item ID>`</BR>
 Modifies the description of given work item by insertion of a random string. This must create an entry in work item history store (including increment of revision).
 </BR>
+
+## Get item
+Start by: `python src/get_item.py`</BR>
+Parameter: `<Work Item ID> [<Revision ID>]`</BR>
+Retrieves the work item and its state at given revision.<BR/>
+If revision is omitted, HEAD is assumed.
 
 ## Add attachment
 Start by: `python src/add_attachment.py`</BR>

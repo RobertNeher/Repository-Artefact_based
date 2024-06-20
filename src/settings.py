@@ -30,3 +30,4 @@ Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming 
 """
 wiIndex = "workItemIndex"
 baselineIndex = "baselineIndex"
+wiHistoryIndex = "workItemHistoryIndex"

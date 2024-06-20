@@ -21,3 +21,4 @@ if __name__ == "__main__":
         sys.exit(0)
 
     deleteWorkItem(workItemID=sys.argv[1])
+    print(f"Work item {sys.argv[1]} marked as deleted")

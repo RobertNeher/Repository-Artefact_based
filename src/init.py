@@ -34,12 +34,18 @@ def initializeRepo():
         wiCollection = db.get_collection(settings.workItemCollection)
         db.get_collection(settings.workItemHistoryCollection).delete_many({})
 
+    if not settings.workItemHistoryCollection in db.list_collection_names():
+        wiHistoryCollection = db.create_collection(settings.workItemHistoryCollection)
+    else:
+        wiHistoryCollection = db[settings.workItemHistoryCollection]
+
     # create index
-    if not settings.wiIndex in wiCollection.list_indexes():
-        wiCollection.create_index(['projectID', 'workItemID'], name=settings.wiIndex)
+    if not settings.wiHistoryIndex in wiHistoryCollection.list_indexes():
+        wiHistoryCollection.create_index(["workItemID", {"revision", DESCENDING}], unique=True)
 
     # empty workItemCollection
     wiCollection.delete_many({})
+    print("Work item store erased.")
 
     # reset revisions store
     print("Reset revisions store and baselines")
@@ -58,6 +64,7 @@ def initializeRepo():
     if not settings.baselineIndex in baselines.list_indexes():
         baselines.create_index({'revision': DESCENDING}, name=settings.baselineIndex)
 
+    print("Initialization finished")
 
 if __name__ == "__main__":
     initializeRepo()
