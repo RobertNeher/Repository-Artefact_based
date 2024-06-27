@@ -1,13 +1,13 @@
 from datetime import datetime
 import sys
-import settings
+import common.settings as settings
 
 from bson import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 
-def rollback(workItemID: str, revisionID: int, author: str):
+def rollback(wiID: str, revisionID: int, author: str):
     workItemID = ObjectId(workItemID)
 
     client = MongoClient(settings.uri, server_api=ServerApi('1'))
@@ -53,4 +53,4 @@ if __name__ == "__main__":
         print("Revision ID is missing")
         sys.exit(0)
 
-    rollback(workItemID=sys.argv[1], revisionID=int(sys.argv[2]), author="Robby")
+    rollback(wiID=sys.argv[1], revisionID=int(sys.argv[2]), author="Robby")

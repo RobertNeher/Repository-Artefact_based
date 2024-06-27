@@ -1,9 +1,9 @@
 from copy import deepcopy
 from datetime import datetime
 import sys
-from prepare_workitem import prepareWorkItem
-from pretty_print import prettyPrint
-import settings
+from workItem.prepare_workitem import prepareWorkItem
+from workItem.pretty_print import prettyPrint
+import common.settings as settings
 
 from bson import ObjectId
 from pymongo.mongo_client import MongoClient
@@ -18,7 +18,8 @@ def getWorkItemRevision(wiID: str, revisionID: int):
     wiHistoryCollection = client[settings.dbName].get_collection(settings.workItemHistoryCollection)
 
     workItemInitialState = wiHistoryCollection.find({"workItemID": workItemID}).sort({"revision": ASCENDING})[0]
-    if revisionID is None:
+
+    if revisionID == -1:
         changes = wiHistoryCollection.find({"workItemID": workItemID}).sort({"revision": ASCENDING})
     else:
         changes = wiHistoryCollection.find({"$and": [{"workItemID": workItemID}, {"revision": {"$lte": revisionID}}]}).sort({"revision": ASCENDING})
@@ -52,4 +53,4 @@ if __name__ == "__main__":
     if len(sys.argv) == 3:
         getWorkItemRevision(wiID=sys.argv[1], revisionID=int(sys.argv[2]))
     else:
-        getWorkItemRevision(wiID=sys.argv[1], revisionID=None)
+        getWorkItemRevision(wiID=sys.argv[1], revisionID=-1)

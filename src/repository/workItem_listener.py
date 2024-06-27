@@ -1,8 +1,8 @@
 import pymongo
 from datetime import datetime
-import settings
+import common.settings as settings
 
-def changeStream():
+def workItemListener():
     client = pymongo.MongoClient(settings.uri)
     db = client.get_database(settings.dbName)
 
@@ -55,4 +55,4 @@ def changeStream():
 
 #------------------------ MAIN ------------------------#
 if __name__ == "__main__":
-    changeStream()
+    workItemListener()

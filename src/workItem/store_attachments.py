@@ -3,7 +3,7 @@ import pickle
 import sys
 
 from prepare_workitem import prepareWorkItem
-import settings as settings
+import common.settings as settings
 from bson import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -14,7 +14,7 @@ def storeAttachments(workItemID: str, revision: int):
     wiCollection = client[settings.dbName].get_collection(settings.workItemCollection)
     workItem = wiCollection.find_one({"_id": ObjectId(workItemID)})
 
-    if revision is not None:
+    if revision != -1:
         wiHistoryCollection = client[settings.dbName].get_collection(settings.workItemHistoryCollection)
         changes2Apply = wiHistoryCollection.find_one({"$and": [{"workItemID": ObjectId(workItemID)}, {"revision": revision}]})
         workItem = prepareWorkItem(workItem, changes2Apply)
@@ -34,6 +34,6 @@ if __name__ == "__main__":
         print('A workitem ID is missing')
         exit(1)
     if len(sys.argv) == 2:
-        storeAttachments(sys.argv[1], revision=None)
+        storeAttachments(sys.argv[1], revision=-1)
     else:
         storeAttachments(sys.argv[1], revision=int(sys.argv[2]))

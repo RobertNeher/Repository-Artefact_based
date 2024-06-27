@@ -1,7 +1,7 @@
 import random
 
 from pymongo import DESCENDING
-import settings as settings
+import common.settings as settings
 from datetime import datetime
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
