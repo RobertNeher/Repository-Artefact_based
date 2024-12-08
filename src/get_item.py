@@ -1,14 +1,14 @@
 from copy import deepcopy
-from datetime import datetime
+# from datetime import datetime
 import sys
-from workItem.prepare_workitem import prepareWorkItem
-from workItem.pretty_print import prettyPrint
-import common.settings as settings
+from prepare_workitem import prepareWorkItem
+from pretty_print import prettyPrint
+import settings as settings
 
 from bson import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-from pymongo import ASCENDING, DESCENDING
+from pymongo import ASCENDING #, DESCENDING
 
 
 def getWorkItemRevision(wiID: str, revisionID: int):
@@ -37,8 +37,8 @@ def getWorkItemRevision(wiID: str, revisionID: int):
                 print(f"Work item '{change["workItemID"]} is being flagged as deleted at revision {change["revision"]}")
                 break
 
-        workItem = prepareWorkItem(change["workItemID"], change["change"])  
-    
+        workItem = prepareWorkItem(change["workItemID"], change["change"])
+
     if revisionID is not None:
         workItem["revision"] = revisionID
 

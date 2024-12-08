@@ -62,8 +62,8 @@ if __name__ == "__main__":
         print('Work item ID is missing')
         sys.exit(0)
 
-    if len(sys.argv) == 2: 
-        listChanges(workItemID=sys.argv[1])
+    if len(sys.argv) == 2:
+        listChanges(workItemID=sys.argv[1], fromRevision=None)
 
     if len(sys.argv) == 3:
         listChanges(workItemID=sys.argv[1], fromRevision=int(sys.argv[2]), toRevision=None)

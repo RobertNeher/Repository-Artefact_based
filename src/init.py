@@ -1,8 +1,9 @@
 import sys
-import settings as settings
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pymongo import DESCENDING
+
+import src.misc.settings as settings
 
 def confirmation() -> bool:
     """
@@ -15,7 +16,7 @@ def confirmation() -> bool:
         answer = input("Please confirm initialization of repository [Y/N]? ").lower()
     return answer == "y"
 
-def initializeRepo():
+def initializeRepo() -> None:
     if not confirmation():
         sys.exit(0)
 

@@ -5,7 +5,7 @@ import sys
 
 import bson
 import settings as settings
-from get_files import getFiles
+from src.get_files import getFiles
 from bson import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi

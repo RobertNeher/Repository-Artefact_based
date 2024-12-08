@@ -1,6 +1,6 @@
 import pymongo
 from datetime import datetime
-import common.settings as settings
+import settings as settings
 
 def workItemListener():
     client = pymongo.MongoClient(settings.uri)
@@ -35,7 +35,7 @@ def workItemListener():
             })
             revisionCollection.update_one({"revision": {"$gte": 0}}, {"$inc": {"revision": 1}})
 
-        if change["operationType"] == "insert": 
+        if change["operationType"] == "insert":
                 if initialContent is not None: # keeping entire initial work item content
                     initialContent.pop("_id", None) # will get a new one anyway
                     initialContent["workItemID"] = change["documentKey"]["_id"]
