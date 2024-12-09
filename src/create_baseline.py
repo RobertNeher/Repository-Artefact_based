@@ -1,3 +1,4 @@
+import argparse
 from datetime import datetime
 import sys
 
@@ -21,25 +22,19 @@ def createBaseline(title: str, author: str):
                                          "createdBy": author,
                                          "timeStamp": datetime.now()})
     finally:
-        print("Baseline '{}' for revision '{}' created successfully.".format(title, revisionID))
+        print(f"Baseline '{title}' for revision '{revisionID}' created successfully.")
 
 #------------------------ MAIN ------------------------#
 if __name__ == "__main__":
-    # for createBaseline
-    # if len(sys.argv) < 2:
-    #     print("Please provide a baseline title.")
-    #     sys.exit(0)
+    parser = argparse.ArgumentParser(description='Attach sample files to given work item',
+                                     usage=f"{sys.argv[0]} [options]", allow_abbrev=False)
+    parser.add_argument('-s', '--summary', nargs='?', help='Description of baselines (req\'d)')
+    parser.add_argument('-a', '--author', nargs='?', help='User ID who creates the baseline.')
 
-    # if len(sys.argv) == 3:
-    #     createBaseline(title=sys.argv[2], author="Robby")
+    args = parser.parse_args()
 
-    # for compareBaselines
-    if len(sys.argv) <= 2:
-        print("Please specify workitem ID and at least one revision ID from which compare should start.\nIf there is no target revision, HED is assumed.")
-        sys.exit(0)
+    if args.summary is None or args.author is None:
+        parser.print_help()
+        exit(-1)
 
-    if len(sys.argv) == 3:
-        compareBaselines(fromRevision=int(sys.argv[2]), toRevision=None)
-
-    if len(sys.argv) == 4:
-        compareBaselines(fromRevision=int(sys.argv[2]), toRevision=int(sys.argv[3]))
+    createBaseline(title=args.summary, author=args.author)

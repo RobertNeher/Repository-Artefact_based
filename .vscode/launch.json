@@ -11,8 +11,9 @@
       "program": "${file}",
       "console": "integratedTerminal",
       "args": [
-        "-w 6756a7b48b7b48b002dc38e6",
-      ]
+                "-s \"Comment 1\"",
+                "-a \"BHC\"",
+        ]
     }
   ]
 }
