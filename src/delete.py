@@ -1,3 +1,4 @@
+import argparse
 from datetime import datetime
 import sys
 import settings
@@ -8,17 +9,23 @@ from pymongo.server_api import ServerApi
 
 
 def deleteWorkItem(workItemID: str) -> bool:
-    workItemID = ObjectId(workItemID)
-
     client = MongoClient(settings.uri, server_api=ServerApi('1'))
     wiCollection = client[settings.dbName].get_collection(settings.workItemCollection)
-    wiCollection.update_one({"_id": workItemID}, update={'$set': {"deleted": True}})
-                               
-                               
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Work item ID is missing")
-        sys.exit(0)
+    wiCollection.update_one({"_id": ObjectId(workItemID)}, update={'$set': {"deleted": True}})
 
-    deleteWorkItem(workItemID=sys.argv[1])
-    print(f"Work item {sys.argv[1]} marked as deleted")
+    return True
+
+#------------------------ MAIN ------------------------#
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Delete work item',
+                                     usage=f"{sys.argv[0]} [options]", allow_abbrev=False)
+    parser.add_argument('-w', '--workItemID', nargs='?', help='work item ID (req\'d)')
+
+    args = parser.parse_args()
+
+    if args.workItemID is None:
+        parser.print_usage()
+        exit(-1)
+
+    deleteWorkItem(workItemID=args.workItemID)
+    print(f"Work item {args.workItemID} marked as deleted")
