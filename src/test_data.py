@@ -65,37 +65,35 @@ def confirmation(workItemID: str) -> bool:
 
 
 ###-------------------- MAIN ----------------------###
-def main():
-    # Create a new client and connect to the server
-    client = MongoClient(settings.uri, server_api=ServerApi('1'))
-    db = client[settings.dbName]
-    wiCollection = db.get_collection(settings.workItemCollection)
-
-    parser = argparse.ArgumentParser(description='Modify data in repository',
-                                     usage=f"{sys.argv[0]} [options]", allow_abbrev=False)
-    parser.add_argument('-w', '--workItemID', nargs='?', help='work item ID (for modes==[d, r, u])')
-    parser.add_argument('-m', '--mode', nargs='?', help='u: update, c: create, d: delete, r: print', default='r')
-
-    args = parser.parse_args()
-
-    if args.mode.strip() == "c":
-        create_workitem(wiCollection=wiCollection)
-
-    if args.workItemID is None and args.mode != "c":
-        print("Please specify workItemID with modes (r)ead, (d)elete, or (u)pdate")
-    else:
-
-        if args.mode.strip() == "r":
-            workitem_details(wiCollection=wiCollection, workItemID=args.workItemID.strip())
-        if args.mode.strip() == "d":
-            print(f"deleting work item {args.workItemID}")
-
-            if confirmation(workItemID=args.workItemID):
-                print("Yup")
-            else:
-                print("Nope")
-        if args.mode.strip() == "u":
-            modifyTestData(wiCollection=wiCollection, workItemID=args.workItem.strip(), )
-
 if __name__ == "__main__":
-    main()
+    def main():
+        # Create a new client and connect to the server
+        client = MongoClient(settings.uri, server_api=ServerApi('1'))
+        db = client[settings.dbName]
+        wiCollection = db.get_collection(settings.workItemCollection)
+
+        parser = argparse.ArgumentParser(description='Modify data in repository',
+                                        usage=f"{sys.argv[0]} [options]", allow_abbrev=False)
+        parser.add_argument('-w', '--workItemID', nargs='?', help='work item ID (for modes==[d, r, u])')
+        parser.add_argument('-m', '--mode', nargs='?', help='u: update, c: create, d: delete, r: print', default='r')
+
+        args = parser.parse_args()
+
+        if args.mode.strip() == "c":
+            create_workitem(wiCollection=wiCollection)
+
+        if args.workItemID is None and args.mode != "c":
+            print("Please specify workItemID with modes (r)ead, (d)elete, or (u)pdate")
+        else:
+
+            if args.mode.strip() == "r":
+                workitem_details(wiCollection=wiCollection, workItemID=args.workItemID.strip())
+            if args.mode.strip() == "d":
+                print(f"deleting work item {args.workItemID}")
+
+                if confirmation(workItemID=args.workItemID):
+                    print("Yup")
+                else:
+                    print("Nope")
+            if args.mode.strip() == "u":
+                modifyTestData(wiCollection=wiCollection, workItemID=args.workItem.strip(), )

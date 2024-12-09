@@ -1,3 +1,4 @@
+import argparse
 import hashlib
 import os
 import pickle
@@ -5,7 +6,7 @@ import sys
 
 import bson
 import settings as settings
-from src.get_files import getFiles
+from get_files import getFiles
 from bson import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -46,8 +47,14 @@ def addAttachments(workItemID: str):
 
 #------------------------ MAIN ------------------------#
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print('A workitem ID is missing')
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description='Attach sample files to given work item',
+                                     usage=f"{sys.argv[0]} [options]", allow_abbrev=False)
+    parser.add_argument('-w', '--workItemID', nargs='?', help='work item ID (req\'d)')
 
-    addAttachments(sys.argv[1])
+    args = parser.parse_args()
+
+    if args.workItemID is None:
+        parser.print_usage()
+        exit(-1)
+
+    addAttachments(args.workItemID)

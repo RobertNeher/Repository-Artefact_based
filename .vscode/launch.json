@@ -11,8 +11,7 @@
       "program": "${file}",
       "console": "integratedTerminal",
       "args": [
-        "-w 675080a0d0975a7af24dff82",
-        "-m r"
+        "-w 6756a7b48b7b48b002dc38e6",
       ]
     }
   ]
