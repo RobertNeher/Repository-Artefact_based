@@ -33,17 +33,22 @@ MongoDB Atlas
 
 ## Change stream
 
-Start by: `python src/change_stream.py` (in a dedicated separate shell)\
+Start by: `python src/workitem_listener.py` (in a dedicated separate shell)\
 Parameters: None\
-Listens to changes in the work item document store:
+Listens to changes in the document stores, located in MongoDB document storage:
+
+- Work item
+- Document (work item collection)
+- Attachment
+- Folder
 
 - insert
 - update
 - delete
 
-events will be recognized and stores the changes (AKA deltas) in work item history store.
+events will be recognized and stores the changes (AKA deltas) in document history store.
 
-Revision 0 keeps always the initial version of the work item.
+Revision 0 keeps always the initial version of the document
 
 HINT: Please use delete_workitem.py for deletion. Only in this case a retrieval of deleted work item is possible. A deletion by mean of the work item store, the deletion state is lost forever.
 
@@ -57,75 +62,75 @@ Parameters: None
 - Resets the revision counter
 - Resets the history stores\
 
-## Create test data
+## Create, update, delete, read test data
 
-Start by: `python src/create_test_data.py`\
-Parameters: None
+Start by: `python src/test_data.py`\
+Parameters:
+- --mode (-m) [crud]\
+    - c: Create new work item\
+    - r: Show work item
+    - u: Update work item (arbitrary modification of description)
+    - d: Delete work item
+- `--(w)orkItemID <work Item ID>` (not required for mode 'c' (create a new work item))
 
 - Creates almost 1'000 entries in work item store with arbitrary description and summary
-An initialization of the repository is recommended, beforehand.
-
-## Modify test data
-
-Start by: `python src/modify_test_data.py`\
-Parameter: `<Work item ID>`\
-Modifies the description of given work item by insertion of a random string. This must create an entry in work item history store (including increment of revision).
-
-## Get item
-
-Start by: `python src/get_item.py`\
-Parameter: `<Work Item ID> [<Revision ID>]`\
-Retrieves the work item and its state at given revision.\
-If revision is omitted, HEAD is assumed.
+An initialization of the repository is recommended, as initial step.
 
 ## Add attachment
 
 Start by: `python src/add_attachment.py`\
-Parameter: `<Work Item ID>`\
+Parameter: `--(w)workItemID <Work Item ID>`\
 Adds an arbitrary number of attachments from testFiles folder, to given work item. This must create an entry in work item history store (including increment of revision).
 
-## Store attachment
+## Remove attachment
 
-Start by: `python src/store_attachment.py`\
-Parameter: `<Work Item ID> [<Revision ID>]`\
+Start by: `python src/remove_attachment.py`\
+Parameter:
+  `--(w)orkItemID <Work Item ID>`\
+  `document name`
+Adds an arbitrary number of attachments from testFiles folder, to given work item. This must create an entry in work item history store (including increment of revision).
+
+## Download attachments
+
+Start by: `python src/store_attachments.py`\
+Parameter: `--(w)orkItemID <Work Item ID> [--(r)evision <Revision ID>]`\
 Downloads all attachments of given work item to current folder. If revision ID is not given, attachments of HEAD revision will be taken.
 
 ## Create baseline
 
 Start by: `python src/create_baseline.py`\
-Parameter: `<Work Item ID> [<Revision ID>]`\
-Parameters: `<Label> <Author>`\
+Parameters: `--(l)abel <Label> --(a)uthor <Author>`\
 Creates a baseline in baseline store. In fact, it labels the HEAD revision.
-
 (A "retrospective" labeling is not possible/recommended.)
 
-### compareBaselines
+### Compare Baselines
 
-Parameters: `<Work Item ID> <From Revision> [<To Revision>]`\
+Start by: `python src/compare_baselines.py`\
+Parameters: `--(w)orkItemID <Work Item ID> --(f)romRevision <From Revision> [--toRevision <To Revision>]`\
 Compares textually "From Revision" with "To Revision" of specified work item. If "To Revision" is not given HEAD is assumed.
 
 ## Delete Work Item
 
 Start by: `python src/delete.py`\
-Parameter: `<Work Item ID>`\
+Parameter: `--(w)orkItemID <Work Item ID>`\
 "Deletes" virtually the work item. It must stay in work item store due to traceability and for recovery purposes, eg. when a rollback has been initiated and the work item needs to be recovered.
 
 ## List changes
 
 Start by: `python src/list_changes.py`\
-Parameter: `<Work Item ID> <From Revision>`\
+Parameter: `--(w)orkItemID <Work Item ID> --(f)romRevision <From Revision>`\
 Is more or less the "front end" of the supporting function "get_deltas", see below.
 
 ## Export log
 
 Start by: `python src/log.py`\
-Parameter: `[<Work Item ID>]`\
+Parameter: `[--(w)orkItemID <Work Item ID>]`\
 Pretty print of all changes of work item. If no work item is specified all changes will be exported.
 
 ## Rollback
 
 Start by: `python src/rollback.py`\
-Parameters: `<Work Item ID> <To Revision>`\
+Parameters: `--(w)orkItemID <Work Item ID> --(t)oRevision <To Revision>`\
 Resets work item's content back to historic state defined by "To Revision". If work item is labeled as "deleted", the work item will be recovered, ie. the label disappears. This action must create an entry in work item history store.
 
 # Supporting modules
