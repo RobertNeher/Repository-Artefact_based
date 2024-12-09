@@ -20,14 +20,13 @@ def workItemListener():
 
     for change in change_stream:
         headRevision = wiHistoryCollection.find_one({"_id": change["documentKey"]["_id"]})
-        print(change["operationType"])
+
         if headRevision is None:
             initialContent = wiCollection.find_one({"_id": change["documentKey"]["_id"]})
 
         currentRevision = revisionCollection.find_one({"revision": {"$gte": 0}})
 
         if change["operationType"] == "update":
-            print("Delete")
             wiHistoryCollection.insert_one({"workItemID": change["documentKey"]["_id"],
                 "change": change["updateDescription"]["updatedFields"],
                 "modifiedBy": "Robby",
