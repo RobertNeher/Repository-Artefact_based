@@ -1,3 +1,4 @@
+import argparse
 from datetime import datetime
 import difflib
 from pathlib import Path
@@ -11,14 +12,14 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pymongo import DESCENDING
 
-def listChanges(workItemID:str, fromRevision:int, toRevision:int):
-    client = MongoClient(settings.uri, server_api=ServerApi('1'))
-    db = client[settings.dbName]
-    wiCollection = db.get_collection(settings.workItemCollection)
-    wiHistoryCollection = db.get_collection(settings.workItemHistoryCollection)
+def listChanges(database:MongoClient, workItemID:str, fromRevision:int=0, toRevision:int=0):
+    # client = MongoClient(settings.uri, server_api=ServerApi('1'))
+    # db = client[settings.dbName]
+    wiCollection = database.get_collection(settings.workItemCollection) # type: ignore
+    wiHistoryCollection = database.get_collection(settings.workItemHistoryCollection) # type: ignore
 
     # get changes on work item
-    if toRevision is None:
+    if toRevision == 0:
         changes = wiHistoryCollection.find({"$and": [{"workItemID": ObjectId(workItemID)}, {"revision": {"$gte": fromRevision}}]}).sort({"revision": DESCENDING})
     else:
         changes = wiHistoryCollection.find({"$and": [{"workItemID": ObjectId(workItemID)}, {"revision": {"$gte": fromRevision}}, {"revision": {"$lte": toRevision}}]}).sort({"revision": DESCENDING})
@@ -26,7 +27,6 @@ def listChanges(workItemID:str, fromRevision:int, toRevision:int):
     baseWorkItem = loads(dumps(wiCollection.find_one({'_id': ObjectId(workItemID)})))
     diffs = HTMLHeader(title="Change log", docTitle="List of Changes")
 
-    skipFirst = False
     skipFirst = toRevision is None
 
     for change in changes:
@@ -58,15 +58,33 @@ def listChanges(workItemID:str, fromRevision:int, toRevision:int):
 
 #------------------------ MAIN ------------------------#
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print('Work item ID is missing')
-        sys.exit(0)
+    #get latest revision
+    client = MongoClient(settings.uri, server_api=ServerApi('1'))
+    db = client[settings.dbName]
+    revisions = db.get_collection(settings.revisionsCollection)
+    latestRevision = revisions.find_one({})["revision"] - 1 # type: ignore
 
-    if len(sys.argv) == 2:
-        listChanges(workItemID=sys.argv[1], fromRevision=None)
+    parser = argparse.ArgumentParser(description='Attach sample files to given work item',
+                                     usage=f"{sys.argv[0]} [options]")
+    parser.add_argument('-w', '--workItemID', nargs='?', help='work item ID (req\'d)')
+    parser.add_argument('-f', '--fromRevision', nargs='?', help='Starting revision')
+    parser.add_argument('-t', '--toRevision', nargs='?', help='Ending revision', const='')
 
-    if len(sys.argv) == 3:
-        listChanges(workItemID=sys.argv[1], fromRevision=int(sys.argv[2]), toRevision=None)
+    args = parser.parse_args(   )
 
-    if len(sys.argv) == 4:
-        listChanges(workItemID=sys.argv[1], fromRevision=int(sys.argv[2]), toRevision=int(sys.argv[3]))
+    if args.workItemID is None:
+        parser.print_usage()
+        exit(-1)
+
+    fromRevision = 0
+    toRevision = latestRevision
+
+    if args.toRevision is None:
+        toRevision = latestRevision
+    else:
+        toRevision = int(args.toRevision.strip())
+
+    if args.fromRevision is not None:
+        fromRevision = int(args.fromRevision.strip())
+
+        listChanges(database=db, workItemID=args.workItemID.strip(), fromRevision=fromRevision, toRevision=toRevision) # type: ignore
