@@ -13,8 +13,6 @@ from pymongo.server_api import ServerApi
 from pymongo import DESCENDING
 
 def listChanges(database:MongoClient, workItemID:str, fromRevision:int=0, toRevision:int=0):
-    # client = MongoClient(settings.uri, server_api=ServerApi('1'))
-    # db = client[settings.dbName]
     wiCollection = database.get_collection(settings.workItemCollection) # type: ignore
     wiHistoryCollection = database.get_collection(settings.workItemHistoryCollection) # type: ignore
 
@@ -62,7 +60,7 @@ if __name__ == "__main__":
     client = MongoClient(settings.uri, server_api=ServerApi('1'))
     db = client[settings.dbName]
     revisions = db.get_collection(settings.revisionsCollection)
-    latestRevision = revisions.find_one({})["revision"] - 1 # type: ignore
+    latestRevision = revisions.find_one({})["revision"] # type: ignore
 
     parser = argparse.ArgumentParser(description='Attach sample files to given work item',
                                      usage=f"{sys.argv[0]} [options]")
@@ -84,7 +82,9 @@ if __name__ == "__main__":
     else:
         toRevision = int(args.toRevision.strip())
 
-    if args.fromRevision is not None:
+    if args.fromRevision is None:
+        fromRevision = 0
+    else:
         fromRevision = int(args.fromRevision.strip())
 
         listChanges(database=db, workItemID=args.workItemID.strip(), fromRevision=fromRevision, toRevision=toRevision) # type: ignore
